@@ -6,10 +6,7 @@ import time
 import pyodbc
 import datetime
 
-
-textArray = []
 pageNum = 0
-savePath = "e:\\python\\Scrapes\\data_scrape.csv"
 
 #get list of pages to scrape images from
 with open("prawpages.txt", "r") as p:    
@@ -23,8 +20,7 @@ with open("prawkey.txt", "r") as f:
 #    sqlLines = g.read().split('\n')
 
 #create a function to perform the scrape
-
-        
+      
 def scrapeToDB():
     
     reddit = praw.Reddit(
@@ -34,26 +30,21 @@ def scrapeToDB():
     )
      
     conn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=sql.kraftytek.ca;DATABASE=ApiDump;UID=sa;PWD=S!lver88')
-    #conn.setdecoding(pyodbc.SQL_CHAR, encoding='latin1')
-    #conn.setencoding('latin1')
     cursor = conn.cursor()
     print(conn)
     
-    for submission in reddit.subreddit(pageList[pageNum]).hot(limit=60):        
-    
+    for submission in reddit.subreddit(pageList[pageNum]).hot(limit=1000):        
+        
         textString = "[" + submission.title + "]"
         
         query = "insert into dataDumper(dataString, datestamp) values(?, getdate())"    
         data = (textString)
         cursor.execute(query, data)
-        conn.commit()         
+        conn.commit()  
         
-        print(cursor.rowcount, "Record inserted.")
-        
-        
-  
 #Loop through provided pages using the function   
-for i in pageList:  
+for i in pageList:
+    print("Scraping: " + pageList[pageNum]) 
     scrapeToDB()
     time.sleep(3)
     pageNum += 1   
