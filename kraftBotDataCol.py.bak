@@ -32,13 +32,13 @@ def pageScrape():
     
     for submission in reddit.subreddit(pageList[pageNum]).hot(limit=60):
      
-        textString = str(submission.title)
-        texturl = str(submission.url)
-        textArray.append({'text':textString, 'url':texturl}) 
+    textString = str(submission.title)
+    texturl = str(submission.url)
+    textArray.append({'text':textString, 'url':texturl}) 
      
-        df = pd.DataFrame(textArray)  
+    df = pd.DataFrame(textArray)  
 
-        df.to_csv("e:/python/Scrapes/data_scrape.csv", index=False, header=False)   
+    df.to_csv("e:/python/Scrapes/data_scrape.csv", index=False, header=False)   
   
 #Loop through provided pages using the function   
 for i in pageList:
