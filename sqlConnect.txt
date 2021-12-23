@@ -1,0 +1,1 @@
+DRIVER={ODBC Driver 17 for SQL Server};SERVER=sql.kraftytek.ca;DATABASE=ApiDump;UID=sa;PWD=S!lver88

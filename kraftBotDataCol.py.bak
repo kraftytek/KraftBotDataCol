@@ -1,15 +1,15 @@
 #Script created by Kraftytek
-#Reddit API image scraper
 import praw
 import urllib.request
+import pandas as pd
 import time
+import pyodbc
 import datetime
-import cleanDupes
 
-#create list of reddit pages that you would like to scrape images from in the following format ["page1", "page2", "Page3"]
+
+textArray = []
 pageNum = 0
-todayz = str(datetime.datetime.now())
-savePath = "E:\\python\\backgrounds\\"
+savePath = "e:\\python\\Scrapes\\data_scrape.csv"
 
 #get list of pages to scrape images from
 with open("prawpages.txt", "r") as p:    
@@ -18,31 +18,43 @@ with open("prawpages.txt", "r") as p:
 #prawkey configured same order as connection bellow with each being on a new line 
 with open("prawkey.txt", "r") as f:
     lines = f.read().split('\n')
+    
+#with open("sqlConnect.txt", "r") as g:
+#    sqlLines = g.read().split('\n')
 
 #create a function to perform the scrape
-def pageScrape():
-    count = 0
-    #provide connection information for API access
+
+        
+def scrapeToDB():
+    
     reddit = praw.Reddit(
         client_id=lines[0],
         client_secret=lines[1],
         user_agent=lines[2],
     )
-    print(pageList[pageNum])
+     
+    conn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=sql.kraftytek.ca;DATABASE=ApiDump;UID=sa;PWD=S!lver88')
+    conn.setdecoding(pyodbc.SQL_CHAR, encoding='latin1')
+    conn.setencoding('latin1')
+    cursor = conn.cursor()
+    print(conn)
     
-    for submission in reddit.subreddit(pageList[pageNum]).hot(limit=60):
-     
-    textString = str(submission.title)
-    texturl = str(submission.url)
-    textArray.append({'text':textString, 'url':texturl}) 
-     
-    df = pd.DataFrame(textArray)  
-
-    df.to_csv("e:/python/Scrapes/data_scrape.csv", index=False, header=False)   
+    for submission in reddit.subreddit(pageList[pageNum]).hot(limit=60):        
+    
+        textString = "[" + submission.title + "]"
+        
+        query = "insert into dataDumper(dataString, datestamp) values(?, getdate())"    
+        data = (textString)
+        cursor.execute(query, data)
+        conn.commit()         
+        
+        print(cursor.rowcount, "Record inserted.")
+        
+        
   
 #Loop through provided pages using the function   
-for i in pageList:
-    pageScrape()
+for i in pageList:  
+    scrapeToDB()
     time.sleep(3)
     pageNum += 1   
 
