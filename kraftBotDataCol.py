@@ -33,11 +33,24 @@ def scrapeToDB():
     cursor = conn.cursor() 
     
 #dump post titles into db with time stamps   
-    for submission in reddit.subreddit(pageList[pageNum]).hot(limit=1000):       
-        
+    for submission in reddit.subreddit(pageList[pageNum]).hot(limit=100): 
+
+        createTable = """
+        if not(exists(select 1 from sys.tables where name like 'dataDumper'))
+        begin
+        create table dataDumper (
+        entry_id int not null identity(1,1),
+        dataString varchar(max) not null,
+        page_name varchar(max),
+        timeStamp datetime,
+        primary key(entry_id))
+        end
+        """
         textString = "[" + submission.title + "]"        
-        query = "insert into dataDumper(dataString, datestamp) values(?, getdate())"    
-        data = (textString)
+        query = "insert into dataDumper(dataString, page_name,  timeStamp) values(?, ?, getdate())"    
+        data = (textString, pageList[pageNum])
+        cursor.execute(createTable)
+        conn.commit()
         cursor.execute(query, data)
         conn.commit()  
         
@@ -48,11 +61,11 @@ for i in pageList:
     time.sleep(3)
     pageNum += 1   
 
-print("  ___________   ")
-print(" /           \  ")
-print(" \  Made By  /  ")
-print(" / Kraftytek \  ")
-print(" \___________/  ")   
+print("  ___________  ")
+print(" /           \ ")
+print(" \  Made By  / ")
+print(" / Kraftytek \ ")
+print(" \___________/ ")   
 
 
         
