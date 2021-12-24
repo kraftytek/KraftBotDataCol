@@ -30,13 +30,11 @@ def scrapeToDB():
     )
      
     conn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=sql.kraftytek.ca;DATABASE=ApiDump;UID=sa;PWD=S!lver88')
-    cursor = conn.cursor()
-    print(conn)
+    cursor = conn.cursor()    
     
     for submission in reddit.subreddit(pageList[pageNum]).hot(limit=1000):        
         
-        textString = "[" + submission.title + "]"
-        
+        textString = "[" + submission.title + "]"        
         query = "insert into dataDumper(dataString, datestamp) values(?, getdate())"    
         data = (textString)
         cursor.execute(query, data)
