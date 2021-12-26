@@ -13,11 +13,11 @@ with open("prawpages.txt", "r") as p:
     pageList = p.read().split('\n')
 
 #prawkey configured same order as connection bellow with each being on a new line 
-with open("prawkey.txt", "r") as f:
+with open("e:\git\praw\prawkey.txt", "r") as f:
     lines = f.read().split('\n')
 
 #provides SQL creds to access the specifed DB    
-with open("sqlConnect.txt", "r") as g:
+with open("e:\git\praw\sqlConnect.txt", "r") as g:
     sqlLines = g.read().split('\n')
 
 #create a function to perform the scrape      
