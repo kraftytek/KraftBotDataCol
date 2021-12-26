@@ -33,7 +33,7 @@ def scrapeToDB():
     cursor = conn.cursor() 
     
 #dump post titles into db with time stamps   
-    for submission in reddit.subreddit(pageList[pageNum]).hot(limit=100): 
+    for submission in reddit.subreddit(pageList[pageNum]).hot(limit=1000): 
 
         createTable = """
         if not(exists(select 1 from sys.tables where name like 'dataDumper'))
